@@ -54,6 +54,10 @@
 </template>
 
 <script lang="ts" setup>
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const loading = ref(false);
 const errorMessage = ref("");
 

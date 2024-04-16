@@ -29,10 +29,11 @@
 
 <script lang="ts" setup>
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ["protected"],
 });
 
 const loading = ref(false);
+const request_loading = ref(false);
 
 const auth = useAuth();
 const toast = useToast();
@@ -53,15 +54,25 @@ const handleLogout = async () => {
 };
 
 const request_smth = async () => {
-  const res = await $fetch("/api/me", {
-    method: "GET",
-  });
-  toast.add({
-    title: "From server",
-    description: res,
-    timeout: 5000,
-  });
-  console.log(res);
+  try {
+    request_loading.value = true;
+    const res = await $fetch("/api/me", {
+      method: "GET",
+    });
+    toast.add({
+      title: "From server",
+      description: res,
+      timeout: 5000,
+    });
+  } catch (error) {
+    toast.add({
+      title: "Error",
+      description: "Failed to request",
+      timeout: 5000,
+    });
+  } finally {
+    request_loading.value = false;
+  }
 };
 </script>
 

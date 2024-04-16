@@ -20,7 +20,7 @@ DEFINE TABLE user TYPE ANY SCHEMAFULL PERMISSIONS FOR select, update, delete WHE
 DEFINE FIELD email ON user TYPE string ASSERT string::is::email($value) PERMISSIONS FULL;
 DEFINE FIELD name ON user TYPE string PERMISSIONS FULL;
 DEFINE FIELD password ON user TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD google_id ON user TYPE string PERMISSIONS FULL;
+DEFINE FIELD google_id ON user TYPE option<string> PERMISSIONS FULL;
 
 DEFINE INDEX email ON user FIELDS email UNIQUE;
 

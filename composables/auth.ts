@@ -88,9 +88,9 @@ export const useAuth = () => {
   const logout = async () => {
     await db.invalidate();
     await auth.signOut();
-    await navigateTo("/signin");
-    token.value = undefined;
     user.value = undefined;
+    token.value = undefined;
+    await navigateTo("/signin");
   };
 
   const loadUser = async (token: string) => {
