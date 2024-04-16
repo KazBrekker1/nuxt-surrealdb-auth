@@ -18,7 +18,11 @@
             block
           />
           <div class="flex gap-1 justify-end">
-            <UButton @click="request_smth" label="Request" />
+            <UButton
+              @click="request_smth"
+              label="Request"
+              :loading="request_loading"
+            />
             <Reset v-if="auth.user.value?.password" />
           </div>
         </div>
