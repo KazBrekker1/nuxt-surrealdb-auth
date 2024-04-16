@@ -17,26 +17,20 @@ export const useAuth = () => {
     token.value = token_res;
     const user_res = await db.select("user");
     user.value = user_res[0] as any;
-    await navigateTo("/");
   };
 
   const register = async (name: string, email: string, password: string) => {
-    try {
-      const token_res = await db.signup({
-        scope: "user",
-        name: name,
-        email: email,
-        password: password,
-        database: "auth-test",
-        namespace: "auth-test",
-      });
-      token.value = token_res;
-      const user_res = await db.select("user");
-      user.value = user_res[0] as any;
-      await navigateTo("/");
-    } catch (error) {
-      console.error("Error signing up", error);
-    }
+    const token_res = await db.signup({
+      scope: "user",
+      name: name,
+      email: email,
+      password: password,
+      database: "auth-test",
+      namespace: "auth-test",
+    });
+    token.value = token_res;
+    const user_res = await db.select("user");
+    user.value = user_res[0] as any;
   };
 
   const resetPassword = async (
@@ -44,7 +38,7 @@ export const useAuth = () => {
     new_password: string,
     email: string
   ) => {
-    const match_req = await db.query(
+    const match_req = await db.query<User[][]>(
       "SELECT * FROM user WHERE email=$email AND crypto::argon2::compare(password, $current_password)",
       {
         email,
@@ -52,9 +46,9 @@ export const useAuth = () => {
       }
     );
 
-    const matched = match_req.length > 0;
+    const matched = match_req[0].length > 0;
 
-    if (!matched) return;
+    if (!matched) throw new Error("Invalid password");
 
     await db.query(
       "UPDATE user SET password=crypto::argon2::generate($new_password) WHERE email=$email",
@@ -70,7 +64,7 @@ export const useAuth = () => {
     await db.invalidate();
     token.value = undefined;
     user.value = undefined;
-    await navigateTo("/auth");
+    await navigateTo("/signin");
   };
 
   const loadUser = async (token: string) => {

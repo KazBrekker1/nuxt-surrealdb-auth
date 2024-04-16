@@ -9,4 +9,7 @@ export default defineNuxtConfig({
       surrealdbName: process.env.NUXT_PUBLIC_SURREALDB_DB,
     },
   },
+  experimental: {
+    viewTransition: true,
+  },
 });
