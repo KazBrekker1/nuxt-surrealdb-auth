@@ -44,18 +44,24 @@ export const useAuth = () => {
     new_password: string,
     email: string
   ) => {
-    const match_req = await db.query_raw(
-      `SELECT * FROM user WHERE email='${email}' AND crypto::argon2::compare(password, '${current_password}')`
+    const match_req = await db.query(
+      "SELECT * FROM user WHERE email=$email AND crypto::argon2::compare(password, $current_password)",
+      {
+        email,
+        current_password,
+      }
     );
-    if (!match_req[0].result) return;
 
-    const match_res = match_req[0].result as User[];
-    const matched = match_res.length > 0;
+    const matched = match_req.length > 0;
 
     if (!matched) return;
 
-    await db.query_raw(
-      `UPDATE user SET password=crypto::argon2::generate('${new_password}') WHERE email='${email}'`
+    await db.query(
+      "UPDATE user SET password=crypto::argon2::generate($new_password) WHERE email=$email",
+      {
+        email,
+        new_password,
+      }
     );
     await logout();
   };
