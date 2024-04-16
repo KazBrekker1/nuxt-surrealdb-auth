@@ -11,9 +11,10 @@
         <div class="flex flex-col gap-1">
           <UButton
             style="view-transition-name: auth-card-submit"
-            @click="auth.logout"
+            @click="handleLogout"
             label="Logout"
             color="red"
+            :loading="loading"
             block
           />
           <div class="flex gap-1 justify-end">
@@ -31,8 +32,26 @@ definePageMeta({
   middleware: ["auth"],
 });
 
+const loading = ref(false);
+
 const auth = useAuth();
 const toast = useToast();
+
+const handleLogout = async () => {
+  loading.value = true;
+  try {
+    await auth.logout();
+  } catch (error) {
+    toast.add({
+      title: "Error",
+      description: "Failed to logout [how?]",
+      timeout: 5000,
+    });
+  } finally {
+    loading.value = false;
+  }
+};
+
 const request_smth = async () => {
   const res = await $fetch("/api/me", {
     method: "GET",
