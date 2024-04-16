@@ -11,8 +11,6 @@ export const useAuth = () => {
       email: email,
       password: password,
       scope: "user",
-      database: "auth-test",
-      namespace: "auth-test",
     });
     token.value = token_res;
     const user_res = await db.select("user");
@@ -25,8 +23,6 @@ export const useAuth = () => {
       name: name,
       email: email,
       password: password,
-      database: "auth-test",
-      namespace: "auth-test",
     });
     token.value = token_res;
     const user_res = await db.select("user");
