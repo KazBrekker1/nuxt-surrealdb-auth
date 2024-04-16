@@ -1,6 +1,12 @@
 <template>
   <div>
-    <UButton label="Reset Password" color="blue" @click="is_open = true" />
+    <UButton
+      label="Reset Password"
+      variant="soft"
+      class="ring-1"
+      color="blue"
+      @click="is_open = true"
+    />
     <UModal v-model="is_open">
       <form @submit.prevent="handleReset" class="p-4 space-y-2">
         <h1>Reset Password</h1>

@@ -1,11 +1,13 @@
+import { config } from "~/utils/surrealdb";
+
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, "token");
-  const res: any = await $fetch("http://localhost:8080/key/user", {
+  const res: any = await $fetch(`${config.url}/key/user`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
-      NS: "auth-test",
-      DB: "auth-test",
+      NS: config.namespace,
+      DB: config.database,
       Accept: "application/json",
     },
   });
