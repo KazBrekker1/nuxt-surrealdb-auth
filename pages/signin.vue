@@ -24,6 +24,18 @@
         :loading="loading"
         block
       />
+      <hr />
+      <UButton
+        label="Sign in with Google"
+        block
+        color="orange"
+        @click="handleGoogleSignin"
+      >
+        <template #leading>
+          <Icon name="mdi:google" />
+        </template>
+      </UButton>
+
       <UAlert
         v-if="errorMessage"
         variant="subtle"
@@ -67,6 +79,20 @@ const handleSubmit = async (e: Event) => {
     });
   } finally {
     loading.value = false;
+  }
+};
+
+const handleGoogleSignin = async () => {
+  try {
+    await auth.googleSignin();
+    await navigateTo("/");
+  } catch (error) {
+    toast.add({
+      color: "red",
+      title: "Error",
+      description: "Failed to sign in with Google",
+      timeout: 5000,
+    });
   }
 };
 </script>

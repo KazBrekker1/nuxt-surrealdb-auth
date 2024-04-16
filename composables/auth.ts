@@ -1,3 +1,5 @@
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
 export const useAuth = () => {
   const user = useState<User | undefined>("user", () => undefined);
   const is_authenticated = computed(() => !!user.value);
@@ -24,6 +26,33 @@ export const useAuth = () => {
       email: email,
       password: password,
     });
+    token.value = token_res;
+    const user_res = await db.select("user");
+    user.value = user_res[0] as any;
+  };
+
+  const googleSignin = async () => {
+    const provider = new GoogleAuthProvider();
+    const auth_res = await signInWithPopup(auth, provider);
+
+    let token_res: string;
+    try {
+      token_res = await db.signin({
+        email: auth_res.user.email,
+        password: auth_res.user.uid,
+        scope: "google_user",
+      });
+    } catch (error) {
+      token_res = await db.signup({
+        scope: "google_user",
+        name: auth_res.user.displayName,
+        email: auth_res.user.email,
+        google_id: auth_res.user.uid,
+      });
+    }
+
+    if (!token_res) throw new Error("Failed to authenticate");
+
     token.value = token_res;
     const user_res = await db.select("user");
     user.value = user_res[0] as any;
@@ -77,6 +106,7 @@ export const useAuth = () => {
     login,
     logout,
     resetPassword,
+    googleSignin,
     loadUser,
   };
 };

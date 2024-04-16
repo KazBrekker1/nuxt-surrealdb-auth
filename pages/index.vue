@@ -18,7 +18,7 @@
           />
           <div class="flex gap-1 justify-end">
             <UButton @click="request_smth" label="Request" />
-            <Reset />
+            <Reset v-if="auth.user.value?.password" />
           </div>
         </div>
       </template>
