@@ -5,7 +5,6 @@
     </template>
     <p>Username: {{ data?.user?.name }}</p>
     <p>Email: {{ data?.user?.email }}</p>
-    {{ token }}
     <template #footer>
       <UButton @click="handleSignOut" color="red">Sign Out</UButton>
     </template>
@@ -20,5 +19,5 @@ const handleSignOut = async () => {
   });
 };
 const headers = useRequestHeaders(["cookie"]) as HeadersInit;
-const { data: token } = await useFetch("/api/me", { headers });
+const { data: token } = await useFetch("/api/token", { headers });
 </script>

@@ -8,8 +8,8 @@ const clientPromise = new Promise<Surreal>(async (resolve, reject) => {
       namespace: config.namespace,
       database: config.database,
       auth: {
-        username: "user",
-        password: "password",
+        username: "kanari",
+        password: "live-mt-kanari",
       },
     });
     resolve(db);
