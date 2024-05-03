@@ -3,7 +3,7 @@
     <template #header>
       <h1>Profile</h1>
     </template>
-    <p>Username: {{ data?.user?.name }}</p>
+    <p>Name: {{ data?.user?.name }}</p>
     <p>Email: {{ data?.user?.email }}</p>
     <template #footer>
       <UButton @click="handleSignOut" color="red">Sign Out</UButton>
