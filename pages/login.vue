@@ -3,20 +3,20 @@
     <template #header>
       <h1>Sign In</h1>
     </template>
-    <section class="flex flex-col gap-2">
+    <form class="flex flex-col gap-2" @submit.prevent="handleSignIn">
       <UInput
-        v-model="email"
         label="Email"
         type="email"
+        name="email"
         placeholder="Enter your email"
       />
       <UInput
-        v-model="password"
         label="Password"
         type="password"
+        name="password"
         placeholder="Enter your password"
       />
-      <UButton label="Sign in" block color="blue" @click="handleSignIn" />
+      <UButton label="Sign in" block color="blue" type="submit" />
       <hr />
       <UButton
         label="Sign in with Google"
@@ -28,7 +28,7 @@
           <Icon name="mdi:google" />
         </template>
       </UButton>
-    </section>
+    </form>
     <template #footer>
       <p class="text-sm">
         Don't have an account?
@@ -44,14 +44,17 @@ definePageMeta({
     navigateAuthenticatedTo: "/",
   },
 });
-const { signIn } = useAuth();
-const email = ref("");
-const password = ref("");
+
 const toast = useToast();
-const handleSignIn = async () => {
+const { signIn } = useAuth();
+
+const handleSignIn = async (event: Event) => {
+  if (!(event.target instanceof HTMLFormElement)) return;
+  const formData = new FormData(event.target);
+
   const resp: any = await signIn("credentials", {
-    email: email.value,
-    password: password.value,
+    email: formData.get("email") as string,
+    password: formData.get("password") as string,
     redirect: false,
   });
   if (resp.error) {
@@ -68,7 +71,7 @@ const handleSignIn = async () => {
 onMounted(async () => {
   const route = useRoute();
   const router = useRouter();
-  const { callbackUrl, error } = route.query;
+  const { error } = route.query;
   if (error) {
     let message =
       error == "OAuthAccountNotLinked"

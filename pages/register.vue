@@ -38,16 +38,31 @@
 
 <script lang="ts" setup>
 definePageMeta({ auth: false });
-const name = ref("");
-const email = ref("");
-const password = ref("");
+
+const { signIn } = useAuth();
+
 const handleSubmit = async (event: Event) => {
   if (!(event.target instanceof HTMLFormElement)) return;
   const formData = new FormData(event.target);
-  const response = await $fetch("/api/auth/signup", {
-    method: "POST",
-    body: formData,
-  });
+  const toast = useToast();
+  try {
+    await $fetch("/api/auth/signup", {
+      method: "POST",
+      body: formData,
+    });
+    await signIn("credentials", {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      callbackUrl: "/",
+    });
+  } catch (error: any) {
+    toast.add({
+      color: "red",
+      title: "Error",
+      description:
+        error?.statusMessage || error?.message || "An error occurred",
+    });
+  }
 };
 </script>
 
