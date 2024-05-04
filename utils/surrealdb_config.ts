@@ -1,7 +1,7 @@
 export const config = {
-  url: import.meta.env.VITE_SURREALDB_URL!,
-  namespace: import.meta.env.VITE_SURREALDB_NS!,
-  database: import.meta.env.VITE_SURREALDB_DB!,
-  username: import.meta.env.VITE_SURREALDB_USER!,
-  password: import.meta.env.VITE_SURREALDB_PASS!,
+  url: process.env.SURREALDB_URL!,
+  namespace: process.env.SURREALDB_NS!,
+  database: process.env.SURREALDB_DB!,
+  username: process.env.SURREALDB_USER!,
+  password: process.env.SURREALDB_PASS!,
 };
