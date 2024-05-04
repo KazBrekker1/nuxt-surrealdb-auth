@@ -25,7 +25,13 @@
         placeholder="Enter your password"
         required
       />
-      <UButton label="Sign up" type="submit" block color="blue" />
+      <UButton
+        :loading="loading"
+        label="Sign up"
+        type="submit"
+        block
+        color="blue"
+      />
     </form>
     <template #footer>
       <p class="text-sm">
@@ -39,11 +45,13 @@
 <script lang="ts" setup>
 definePageMeta({ auth: false });
 
+const loading = ref(false);
 const { signIn } = useAuth();
 
 const handleSubmit = async (event: Event) => {
   if (!(event.target instanceof HTMLFormElement)) return;
   const formData = new FormData(event.target);
+  loading.value = true;
   const toast = useToast();
   try {
     await $fetch("/api/auth/signup", {
@@ -62,6 +70,8 @@ const handleSubmit = async (event: Event) => {
       description:
         error?.statusMessage || error?.message || "An error occurred",
     });
+  } finally {
+    loading.value = false;
   }
 };
 </script>

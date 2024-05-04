@@ -16,9 +16,16 @@
         name="password"
         placeholder="Enter your password"
       />
-      <UButton label="Sign in" block color="blue" type="submit" />
+      <UButton
+        :loading="loading"
+        label="Sign in"
+        block
+        color="blue"
+        type="submit"
+      />
       <hr />
       <UButton
+        :loading="loading"
         label="Sign in with Google"
         block
         color="orange"
@@ -45,26 +52,37 @@ definePageMeta({
   },
 });
 
+const loading = ref(false);
 const toast = useToast();
 const { signIn } = useAuth();
 
 const handleSignIn = async (event: Event) => {
   if (!(event.target instanceof HTMLFormElement)) return;
   const formData = new FormData(event.target);
-
-  const resp: any = await signIn("credentials", {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-    redirect: false,
-  });
-  if (resp.error) {
+  loading.value = true;
+  try {
+    const resp: any = await signIn("credentials", {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      redirect: false,
+    });
+    if (resp.error) {
+      toast.add({
+        color: "red",
+        title: "Error",
+        description: resp.error,
+      });
+    } else {
+      await navigateTo(resp.url, { external: true });
+    }
+  } catch (error) {
     toast.add({
       color: "red",
       title: "Error",
-      description: resp.error,
+      description: "An error occurred",
     });
-  } else {
-    await navigateTo(resp.url, { external: true });
+  } finally {
+    loading.value = false;
   }
 };
 
