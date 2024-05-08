@@ -90,20 +90,21 @@ onMounted(async () => {
   const route = useRoute();
   const router = useRouter();
   const { error } = route.query;
-  if (error) {
-    let message =
-      error == "OAuthAccountNotLinked"
-        ? "Email not linked with google"
-        : (error as string);
-    toast.add({
-      color: "red",
-      title: "Error",
-      description: message,
-    });
-    await router.push({
-      query: {},
-      replace: true,
-    });
-  }
+  if (!error) return;
+  if (error == "undefined") return;
+
+  let message =
+    error == "OAuthAccountNotLinked"
+      ? "Email not linked with google"
+      : (error as string);
+  toast.add({
+    color: "red",
+    title: "Error",
+    description: message,
+  });
+  await router.push({
+    query: {},
+    replace: true,
+  });
 });
 </script>
