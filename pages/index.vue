@@ -24,7 +24,7 @@ const { data, signOut } = useAuth();
 
 const handleSignOut = async () => {
   await signOut({
-    callbackUrl: "/login",
+    callbackUrl: "/signin",
   });
 };
 

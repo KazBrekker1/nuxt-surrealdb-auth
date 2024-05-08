@@ -8,7 +8,7 @@ export default NuxtAuthHandler({
   adapter: SurrealDBAdapter(clientPromise) as any,
   secret: process.env.AUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: "/signin",
   },
   providers: [
     // @ts-expect-error You need to use .default here for it to work during SSR. May be fixed via Vite at some point

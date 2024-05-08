@@ -36,7 +36,7 @@
     <template #footer>
       <p class="text-sm">
         Have an account?
-        <NuxtLink class="text-blue-600" to="/login">sign in</NuxtLink>
+        <NuxtLink class="text-blue-600" to="/signin">sign in</NuxtLink>
       </p>
     </template>
   </UCard>
