@@ -14,18 +14,26 @@
       <p>Email: {{ data?.user?.email }}</p>
     </section>
     <template #footer>
-      <UButton @click="handleSignOut" color="red">Sign Out</UButton>
+      <UButton @click="handleSignOut" :loading color="red">Sign Out</UButton>
     </template>
   </UCard>
 </template>
 
 <script lang="ts" setup>
+const loading = ref(false);
 const { data, signOut } = useAuth();
 
 const handleSignOut = async () => {
-  await signOut({
-    callbackUrl: "/signin",
-  });
+  loading.value = true;
+  try {
+    await signOut({
+      callbackUrl: "/signin",
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 // // Example of getting a JWT token

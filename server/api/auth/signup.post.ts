@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   const name = formData.get("name") as string;
   const image = `https://ui-avatars.com/api/?name=${name}`;
   const query_result = (await db.query(
-    "CREATE user CONTENT { name: $name, email: $email, image: $image ,password: crypto::argon2::generate($password) }",
+    "CREATE user CONTENT { name: $name, email: $email, image: $image, password: crypto::argon2::generate($password) }",
     {
       name: formData.get("name"),
       email: formData.get("email"),

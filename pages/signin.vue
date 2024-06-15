@@ -8,12 +8,14 @@
         label="Email"
         type="email"
         name="email"
+        required
         placeholder="Enter your email"
       />
       <UInput
         label="Password"
         type="password"
         name="password"
+        required
         placeholder="Enter your password"
       />
       <UButton

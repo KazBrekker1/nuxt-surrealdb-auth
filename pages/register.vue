@@ -43,7 +43,12 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({ auth: false });
+definePageMeta({
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: "/",
+  },
+});
 
 const loading = ref(false);
 const { signIn } = useAuth();
