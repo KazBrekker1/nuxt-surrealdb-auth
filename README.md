@@ -41,6 +41,8 @@
 surreal start --user {user} --pass {password} --log debug --bind 127.0.0.1:{PORT} --auth file://{file_name}
 ```
 
+- or use the Dockerfile to start the database
+
 - Replace `{user}` with your SurrealDB username
 - Replace `{password}` with your SurrealDB password
 - Replace `{file_name}` with your SurrealDB auth file
