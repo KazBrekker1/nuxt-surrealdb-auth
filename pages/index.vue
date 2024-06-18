@@ -1,83 +1,64 @@
 <template>
-  <div class="flex flex-col">
-    <UCard class="min-w-[30rem]">
-      <template #header>
-        <h1>Profile</h1>
-      </template>
-      <p>User id: {{ auth.user.value?.id }}</p>
-      <p>Username: {{ auth.user.value?.name }}</p>
-      <p>Email: {{ auth.user.value?.email }}</p>
-      <template #footer>
-        <div class="flex flex-col gap-1">
-          <UButton
-            style="view-transition-name: auth-card-submit"
-            @click="handleLogout"
-            label="Logout"
-            color="red"
-            :loading="loading"
-            block
-          />
-          <div class="flex gap-1 justify-end">
-            <UButton
-              @click="request_smth"
-              label="Request"
-              :loading="request_loading"
-            />
-            <Reset v-if="auth.user.value?.password" />
-          </div>
-        </div>
-      </template>
-    </UCard>
-  </div>
+  <UCard class="min-w-[30rem]" style="view-transition-name: auth-card">
+    <template #header>
+      <h1>Profile</h1>
+    </template>
+    <section class="flex flex-col items-center gap-2">
+      <img
+        class="rounded-full size-20"
+        v-if="data?.user?.image"
+        :src="data?.user?.image"
+        alt="Profile pic"
+      />
+      <p>Name: {{ data?.user?.name }}</p>
+      <p>Email: {{ data?.user?.email }}</p>
+    </section>
+    <template #footer>
+      <div class="flex gap-2 justify-between">
+        <UButton @click="getUser" color="blue" variant="soft">Get User</UButton>
+        <UButton @click="handleSignOut" :loading color="red">Sign Out</UButton>
+      </div>
+    </template>
+  </UCard>
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-  middleware: ["protected"],
-});
-
-const loading = ref(false);
-const request_loading = ref(false);
-
-const auth = useAuth();
 const toast = useToast();
+const loading = ref(false);
+const { data, signOut } = useAuth();
 
-const handleLogout = async () => {
+const handleSignOut = async () => {
   loading.value = true;
   try {
-    await auth.logout();
-  } catch (error) {
-    toast.add({
-      title: "Error",
-      description: "Failed to logout [how?]",
-      timeout: 5000,
+    await signOut({
+      callbackUrl: "/signin",
     });
+  } catch (error) {
+    console.log(error);
   } finally {
     loading.value = false;
   }
 };
 
-const request_smth = async () => {
+const getUser = async () => {
   try {
-    request_loading.value = true;
-    const res = await $fetch("/api/me", {
-      method: "GET",
-    });
-    toast.add({
-      title: "From server",
-      description: res,
-      timeout: 5000,
+    const resp = await $fetch("/api/me");
+    return toast.add({
+      color: "blue",
+      title: "User data",
+      description: JSON.stringify(resp, null, 2),
     });
   } catch (error) {
-    toast.add({
+    console.log(error);
+    return toast.add({
+      color: "red",
       title: "Error",
-      description: "Failed to request",
-      timeout: 5000,
+      description: "Failed to fetch user data",
     });
-  } finally {
-    request_loading.value = false;
   }
 };
-</script>
 
-<style></style>
+// // Example of getting a JWT token
+// const headers = useRequestHeaders(["cookie"]) as HeadersInit;
+// const { data: token } = await useFetch("/api/token", { headers });
+</script>

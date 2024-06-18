@@ -1,15 +1,11 @@
-import { config } from "~/utils/surrealdb";
+import clientPromise from "../surrealdb";
+import { getToken } from "#auth";
 
 export default defineEventHandler(async (event) => {
-  const token = getCookie(event, "token");
-  const res: any = await $fetch(`${config.url}/key/user`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      NS: config.namespace,
-      DB: config.database,
-      Accept: "application/json",
-    },
-  });
-  return res[0].result[0];
+  const db = await clientPromise;
+  let users = await db.select("user");
+  const token = await getToken({ event });
+  let user = users.find((u) => u.email === token?.email) as Record<string, any>;
+  delete user.password; // don't return password
+  return user;
 });

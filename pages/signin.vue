@@ -1,102 +1,112 @@
 <template>
   <UCard class="min-w-[30rem]" style="view-transition-name: auth-card">
     <template #header>
-      <h1>Sign in</h1>
+      <h1>Sign In</h1>
     </template>
-
-    <form
-      method="post"
-      action="/api/login"
-      @submit.prevent="handleSubmit"
-      class="flex flex-col gap-4"
-    >
-      <UInput type="email" name="email" id="email" placeholder="Email" />
+    <form class="flex flex-col gap-2" @submit.prevent="handleSignIn">
       <UInput
+        label="Email"
+        type="email"
+        name="email"
+        required
+        placeholder="Enter your email"
+      />
+      <UInput
+        label="Password"
         type="password"
         name="password"
-        id="password"
-        placeholder="Password"
+        required
+        placeholder="Enter your password"
       />
       <UButton
-        style="view-transition-name: auth-card-submit"
-        type="submit"
-        label="Submit"
         :loading="loading"
+        label="Sign in"
         block
+        color="blue"
+        type="submit"
       />
       <hr />
       <UButton
+        :loading="loading"
         label="Sign in with Google"
         block
         color="orange"
-        @click="handleGoogleSignin"
+        @click="signIn('google')"
       >
         <template #leading>
           <Icon name="mdi:google" />
         </template>
       </UButton>
-
-      <UAlert
-        v-if="errorMessage"
-        variant="subtle"
-        color="red"
-        title="Error"
-        :description="errorMessage"
-      />
     </form>
-
     <template #footer>
-      <NuxtLink class="text-sm text-gray-500" to="/signup">
-        Create an account
-      </NuxtLink>
+      <p class="text-sm">
+        Don't have an account?
+        <NuxtLink class="text-blue-600" to="/register">sign up</NuxtLink>
+      </p>
     </template>
   </UCard>
 </template>
-
-<script lang="ts" setup>
+<script setup lang="ts">
 definePageMeta({
-  middleware: ["auth"],
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: "/",
+  },
 });
 
 const loading = ref(false);
-const errorMessage = ref("");
-
-const auth = useAuth();
 const toast = useToast();
+const { signIn } = useAuth();
 
-const handleSubmit = async (e: Event) => {
-  if (!(e.target instanceof HTMLFormElement)) return;
-  const formData = new FormData(e.target);
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+const handleSignIn = async (event: Event) => {
+  if (!(event.target instanceof HTMLFormElement)) return;
+  const formData = new FormData(event.target);
+  loading.value = true;
   try {
-    loading.value = true;
-    await auth.login(email, password);
-    errorMessage.value = "";
-    await navigateTo("/");
+    const resp: any = await signIn("credentials", {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      redirect: false,
+    });
+    if (resp.error) {
+      toast.add({
+        color: "red",
+        title: "Error",
+        description: resp.error,
+      });
+    } else {
+      await navigateTo(resp.url, { external: true });
+    }
   } catch (error) {
     toast.add({
       color: "red",
       title: "Error",
-      description: "Invalid email or password",
-      timeout: 5000,
+      description: "An error occurred",
     });
   } finally {
     loading.value = false;
   }
 };
 
-const handleGoogleSignin = async () => {
-  try {
-    await auth.googleSignin();
-    await navigateTo("/");
-  } catch (error) {
-    toast.add({
-      color: "red",
-      title: "Error",
-      description: "Failed to sign in with Google",
-      timeout: 5000,
-    });
-  }
-};
+onMounted(async () => {
+  const route = useRoute();
+  const router = useRouter();
+  const { error } = route.query;
+  if (!error) return;
+  if (error == "undefined") return;
+
+  let message =
+    error == "OAuthAccountNotLinked"
+      ? "Email not linked with google"
+      : (error as string);
+  toast.add({
+    color: "red",
+    title: "Error",
+    description: message,
+  });
+  await router.push({
+    query: {},
+    replace: true,
+  });
+});
 </script>

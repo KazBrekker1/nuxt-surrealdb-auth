@@ -20,8 +20,8 @@
 
 ### Authentication
 
+- Google Authentication through NuxtAuth
 - Email and Password Authentication is enabled by default in SurrealDB
-- Google Authentication is enabled through Firebase
 
 ### Interaction with sureraldb from server side
 
@@ -30,10 +30,8 @@
 ### Environment Variables
 
 - Open `.env.example` file and rename it to `.env`
-- Replace The `VITE_SURREALDB_URL` variable to your SurrealDB URL
-- Replace The `VITE_SURREALDB_NS` variable to your SurrealDB Namespace
-- Replace The `VITE_SURREALDB_DB` variable to your SurrealDB Database Name
-- Open the `utils/firebase.ts` file and replace the `firebaseConfig` object with your Firebase Config
+- Replace The values in `.env` file with your own values
+  - To set up the Google Client ID and Client Secret, please refer to the [Google OAuth documentation](https://support.google.com/cloud/answer/6158849?hl=en)
 
 ## Project Setup
 
@@ -46,18 +44,6 @@ surreal start --user {user} --pass {password} --log debug --bind 127.0.0.1:{PORT
 - Replace `{user}` with your SurrealDB username
 - Replace `{password}` with your SurrealDB password
 - Replace `{file_name}` with your SurrealDB auth file
-- Replace `{PORT}` with your desired port number
-
-### Push schema to DB
-
-```bash
-surreal import --user {user} --pass {password} --namespace {db_namespace} --database {db_database}  base_db.surql --conn http://localhost:{PORT}
-```
-
-- Replace `{user}` with your SurrealDB username
-- Replace `{password}` with your SurrealDB password
-- Replace `{db_namespace}` with your SurrealDB namespace from `.env` file
-- Replace `{db_database}` with your SurrealDB database name from `.env` file
 - Replace `{PORT}` with your desired port number
 
 ### Install Dependencies
