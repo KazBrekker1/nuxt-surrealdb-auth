@@ -14,12 +14,16 @@
       <p>Email: {{ data?.user?.email }}</p>
     </section>
     <template #footer>
-      <UButton @click="handleSignOut" :loading color="red">Sign Out</UButton>
+      <div class="flex gap-2 justify-between">
+        <UButton @click="getUser" color="blue" variant="soft">Get User</UButton>
+        <UButton @click="handleSignOut" :loading color="red">Sign Out</UButton>
+      </div>
     </template>
   </UCard>
 </template>
 
 <script lang="ts" setup>
+const toast = useToast();
 const loading = ref(false);
 const { data, signOut } = useAuth();
 
@@ -33,6 +37,24 @@ const handleSignOut = async () => {
     console.log(error);
   } finally {
     loading.value = false;
+  }
+};
+
+const getUser = async () => {
+  try {
+    const resp = await $fetch("/api/me");
+    return toast.add({
+      color: "blue",
+      title: "User data",
+      description: JSON.stringify(resp, null, 2),
+    });
+  } catch (error) {
+    console.log(error);
+    return toast.add({
+      color: "red",
+      title: "Error",
+      description: "Failed to fetch user data",
+    });
   }
 };
 

@@ -18,7 +18,7 @@ const toggleColorMode = () => {
           :variant="is_dark ? 'soft' : 'solid'"
           :icon="is_dark ? 'i-heroicons-sun' : 'i-heroicons-moon'"
           :label="is_dark ? 'Light' : 'Dark'"
-          :color="is_dark ? 'primary' : 'black'"
+          :color="is_dark ? 'cyan' : 'black'"
         />
       </ClientOnly>
     </UContainer>
