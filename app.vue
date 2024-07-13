@@ -23,5 +23,6 @@ const toggleColorMode = () => {
       </ClientOnly>
     </UContainer>
     <UNotifications />
+    <NuxtLoadingIndicator />
   </NuxtLayout>
 </template>

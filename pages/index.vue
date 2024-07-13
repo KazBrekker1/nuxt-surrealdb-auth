@@ -15,8 +15,17 @@
     </section>
     <template #footer>
       <div class="flex gap-2 justify-between">
-        <UButton @click="getUser" color="blue" variant="soft">Get User</UButton>
-        <UButton @click="handleSignOut" :loading color="red">Sign Out</UButton>
+        <UButton
+          @click="getUser"
+          :loading="get_user_loading"
+          color="blue"
+          variant="soft"
+        >
+          Get User
+        </UButton>
+        <UButton @click="handleSignOut" :loading="signout_loading" color="red">
+          Sign Out
+        </UButton>
       </div>
     </template>
   </UCard>
@@ -24,11 +33,12 @@
 
 <script lang="ts" setup>
 const toast = useToast();
-const loading = ref(false);
+const signout_loading = ref(false);
+const get_user_loading = ref(false);
 const { data, signOut } = useAuth();
 
 const handleSignOut = async () => {
-  loading.value = true;
+  signout_loading.value = true;
   try {
     await signOut({
       callbackUrl: "/signin",
@@ -36,12 +46,13 @@ const handleSignOut = async () => {
   } catch (error) {
     console.log(error);
   } finally {
-    loading.value = false;
+    signout_loading.value = false;
   }
 };
 
 const getUser = async () => {
   try {
+    get_user_loading.value = true;
     const resp = await $fetch("/api/me");
     return toast.add({
       color: "blue",
@@ -55,6 +66,8 @@ const getUser = async () => {
       title: "Error",
       description: "Failed to fetch user data",
     });
+  } finally {
+    get_user_loading.value = false;
   }
 };
 
